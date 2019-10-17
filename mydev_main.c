@@ -1,6 +1,8 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/pci.h>
+#include "chardev.h"
+#include "mydev_main.h"
 
 static struct pci_device_id my_driver_id_table[] = {
 	{ PCI_DEVICE(0x0104, 0x0001) }, //VID & PID of device
@@ -8,6 +10,7 @@ static struct pci_device_id my_driver_id_table[] = {
 };
 
 MODULE_DEVICE_TABLE(pci, my_driver_id_table);
+
 
 static int my_driver_probe(struct pci_dev *pdev, const struct pci_device_id *ent);
 static void my_driver_remove(struct pci_dev *pdev);
@@ -20,6 +23,7 @@ static struct pci_driver my_driver = {
 	.remove = my_driver_remove
 };
 
+
 //init function for kernel - entry point
 static int __init mypci_driver_init(void)
 {
@@ -30,10 +34,29 @@ static int __init mypci_driver_init(void)
 static void __exit mypci_driver_exit(void)
 {
 	pci_unregister_driver(&my_driver);
+	destroy_char_dev();
 }
 
 static int my_driver_probe(struct pci_dev *pdev, const struct pci_device_id *ent){
 //Do there what we want
+	int bar; int err;
+	struct my_driver_priv *drv_priv;
+	unsigned int mmio_start, mmio_len;
+	bar = pci_select_bars(pdev, IORESOURCE_IO);
+	err = pci_enable_device_mem(pdev);
+	
+	if (err) {
+		return err; //i.e 1 
+	}
+
+	mmio_start  = pci_resource_start(pdev, 0);
+	mmio_len = pci_resource_len(pdev, 0);
+	printk("Device BAR starts @ Ox%X, and its length is 0x%X\n", mmio_start, mmio_len);
+	drv_priv->hwmem = ioremap(mmio_start , mmio_len);
+	drv_priv = kzalloc(sizeof(struct my_driver_priv), GFP_KERNEL);
+
+	create_char_dev(drv_priv);
+	pci_set_drvdata(pdev, drv_priv);
 	return 0;
 }
 
@@ -44,6 +67,11 @@ void release_device(struct pci_dev *pdev)
 
 static void my_driver_remove(struct pci_dev *pdev)
 {
+	struct my_driver_priv *drv_priv = pci_get_drvdata(pdev);
+	if (drv_priv)
+	{
+		kfree(drv_priv);
+	}
 	release_device(pdev);
 }
 
@@ -53,4 +81,3 @@ MODULE_VERSION("0.1 alfa");
 
 module_init(mypci_driver_init);
 module_exit(mypci_driver_exit);
-

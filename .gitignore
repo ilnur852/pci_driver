@@ -1,0 +1,10 @@
+*.mk
+*.swp
+*.cmd
+*.mod
+*.json
+*.o
+*.symvers
+*.order
+*.ko
+*.d

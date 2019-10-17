@@ -1,11 +1,13 @@
 BINARY		:= mydev
-KERNEL		:= /lib/modules/$(shell uname -r)/build
+KERNEL		:= /lib/modules/4.19.0-6-686-pae/build
 ARCH		:= x86
 C_FLAGS		:= -Wall
 KMOD_DIR	:= $(shell pwd)
-TARGET_PATH := /lib/modules/$(shell uname -r)/kernel/drivers/char
+TARGET_PATH := /lib/modules/4.19.0-6-686-pae/kernel/drivers/char
 
-OBJECTS	:= mydev_main.o
+OBJECTS	:= \
+		mydev_main.o\
+		chardev.o\
 
 ccflags-y += $(C_FLAGS)
 
