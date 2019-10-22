@@ -28,6 +28,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xb57c9d32, "module_layout" },
 	{ 0xe61d9d25, "kmalloc_caches" },
 	{ 0xbeb90d2e, "cdev_init" },
+	{ 0xf8147c92, "pci_release_region" },
 	{ 0xe1a3d2bf, "pci_disable_device" },
 	{ 0xad27f361, "__warn_printk" },
 	{ 0x253fad60, "device_destroy" },
@@ -47,6 +48,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xb6f8eb53, "__pci_register_driver" },
 	{ 0x1fa06916, "class_destroy" },
 	{ 0x16a6c5e6, "pci_enable_device_mem" },
+	{ 0x4a453f53, "iowrite32" },
 	{ 0x362ef408, "_copy_from_user" },
 	{ 0x9478a3f7, "__class_create" },
 	{ 0x88db9f48, "__check_object_size" },
@@ -61,4 +63,4 @@ __attribute__((section(".modinfo"))) =
 
 MODULE_ALIAS("pci:v00000104d00000001sv*sd*bc*sc*i*");
 
-MODULE_INFO(srcversion, "F7B1BB0D4D65F813C9F520B");
+MODULE_INFO(srcversion, "C27E5C82BA5F40CA676EC26");
